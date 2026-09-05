@@ -1,5 +1,9 @@
-import { notImplemented } from '@/lib/api/not-implemented';
-/** Replace with validated parse handling when implementing this feature. */
-export async function POST() {
-  return notImplemented('Request parsing');
+import { parseRequest } from '@/features/parser/parse-request';
+import { parseInputSchema } from '@/lib/validation/community';
+import { apiError, jsonResponse, readInput } from '@/lib/api/http';
+export async function POST(request: Request) {
+  try {
+    const { text } = await readInput(request, parseInputSchema);
+    return jsonResponse(parseRequest(text));
+  } catch (error) { return apiError(error); }
 }

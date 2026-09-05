@@ -4,10 +4,12 @@ A community application connecting generations through shared activities at Pek 
 
 ## Current status
 
-The project structure is ready: Next.js App Router, strict TypeScript, Tailwind CSS 4,
-warm starter pages, domain contracts, API placeholders, and an optional server-only Supabase client.
-Parsing, matching, fixtures, scheduling, interest persistence, and accounts are **not implemented yet**.
-The three placeholder POST endpoints return HTTP 501.
+The core guest demo works: a warm landing form, English request parsing, editable
+interpretation, intergenerational matching, suggested facility/time slots, and interest
+recording. It includes 15 fictional residents, five illustrative facilities, and fixture
+or Supabase storage. The live Supabase schema, seed, access restrictions, and duplicate
+interest protection have been verified. This local project uses DATA_SOURCE=supabase.
+Accounts, messaging, actual facility bookings, and OpenAI calls are not implemented.
 
 ## Run locally
 
@@ -18,7 +20,7 @@ npm install
 npm run dev
 ```
 
-Open the localhost URL printed by Next.js. No API keys are required.
+Open the localhost URL printed by Next.js. No API keys are required in fixture mode.
 
 The starter uses TypeScript 6 because the installed Next.js ESLint tooling does not
 yet support TypeScript 7. The compiler targets ES2022 and Tailwind uses its v4 PostCSS plugin.
@@ -26,6 +28,7 @@ yet support TypeScript 7. The compiler targets ES2022 and Tailwind uses its v4 P
 ```sh
 npm run lint
 npm run typecheck
+npm test
 npm run build
 npm start
 ```
@@ -35,12 +38,12 @@ npm start
 ```text
 src/
   app/
-    page.tsx                 Warm landing page starter
-    results/page.tsx         Results shell
+    page.tsx                 Landing page and request form
+    results/page.tsx         Match cards, suggestions, and interest flow
     api/
-      parse/route.ts         Parsing placeholder
-      matches/route.ts       Matching placeholder
-      interests/route.ts     Interest placeholder
+      parse/route.ts         English keyword interpretation
+      matches/route.ts       Validated matching and scheduling
+      interests/route.ts     Validated, idempotent interest recording
     layout.tsx               Metadata and layout
     globals.css              Tailwind 4 theme
   components/
@@ -52,17 +55,20 @@ src/
     scheduling/              Singapore-time facility suggestions
     interests/               Express Interest flow
     auth/                    Optional future accounts
-  data/                      Future resident and facility fixtures
+  data/                      Validated resident and facility JSON fixtures
   lib/
     api/                     Response helpers
-    repositories/            Storage-independent contracts
+    repositories/            Fixture and Supabase storage adapters
     supabase/                Server-only client factory
     constants.ts             Labels, timezone, examples
+    validation/              Runtime validation for data and interests
   types/domain.ts            Resident, request, facility, match types
 supabase/
-  migrations/                Future SQL schema
-  seeds/                     Future repeatable fixtures
-tests/                       Planned behavior coverage
+  setup.sql                  Complete script to run in Supabase SQL Editor
+  migrations/                Versioned SQL schema with RLS and grants
+  seeds/                     Generated, repeatable fixture seed
+scripts/                     SQL preparation and live connection verification
+tests/                       Parser, matching, schedule, and database checks
 ```
 
 ## Decisions
@@ -70,37 +76,78 @@ tests/                       Planned behavior coverage
 - Age and role are independent. Role belongs to each activity: a senior can learn coding while a young adult teaches.
 - Groups: 20–40, 41–64, 65+, and family with kids. Children participate through a parent.
 - English UI/parser; English, Mandarin, Tamil, Malay, and Hokkien matching preferences.
-- Fixture mode will run without keys; Supabase stays optional. Failed database writes must not silently fall back.
+- Fixture reads run without keys; Supabase stays optional. Failed database writes never silently fall back. Fixture interests are saved in browser local storage.
 - Facility slots are labelled demo suggestions, never reservations.
 - Interest recording sends no messages. Accounts are a stretch goal after the guest demo works.
 
 ## Optional Supabase
 
-Copy .env.example to .env.local when integrating. Set SUPABASE_URL and SUPABASE_SECRET_KEY
-in the server environment only. The client factory returns null when either is missing;
-it does not connect automatically, create tables, or implement storage.
+1. Copy .env.example to .env.local and populate the server URL/secret and public URL/publishable key. Both URLs must identify the same project. Keep DATA_SOURCE=fixtures during setup.
+2. Run `npm run db:prepare` if fixtures or the migration have changed. This regenerates `supabase/setup.sql` and `supabase/seeds/demo.sql` from the JSON source data.
+3. Open your Supabase project, choose **SQL Editor → New query**, paste all of `supabase/setup.sql`, and run it. The script creates residents, facilities, and interests; applies RLS/grants; and seeds 15 residents and five facilities. Rerunning preserves existing interests.
+4. Run `npm run db:check` for read/seed/access-policy verification. `SCHEMA_MISSING` means step 3 is still needed.
+5. Run `npm run db:verify` to also insert one synthetic interest, retry it to check duplicate protection, and remove only that temporary row.
+6. After verification succeeds, set DATA_SOURCE=supabase and restart the development server. Matching and interest routes use `createCommunityRepository()` to select the adapter.
 
-DATA_SOURCE=fixtures is reserved for future adapters. Switch to supabase after the schema,
-seed, and adapter exist. Future Auth uses the separate public URL/publishable key and
-cookie-aware user clients with ownership-based RLS. Never expose secret keys to the browser
-or use the privileged client as a signed-in user session.
+The secret API key authorizes data operations but is not a database migration credential;
+run the schema through the SQL Editor. No key or real resident information is embedded in SQL.
+All three tables deny direct access to anon/authenticated clients. Future Auth will add
+a separate real-user profiles table and ownership policies before exposing private account views.
+Never expose the secret key or use the privileged client as a signed-in user session.
 
 ## Vercel
 
 Import this repository as Next.js, select Node.js 22.x or a compatible newer runtime,
 and use the default next build configuration. Add Supabase environment variables only
-when the integration is ready. No deployment was created during scaffold setup.
+for Supabase mode. Set DATA_SOURCE=supabase and the same Supabase environment values
+in Vercel; keep the secret server-only. No Vercel deployment has been created yet.
 
-## Next steps
+## Guest workflow and API
 
-1. Populate 15 fictional residents and demo facility schedules.
-2. Implement parsing and editable request confirmation.
-3. Implement matching, bridge badges, and suggested slots.
-4. Connect results and interest recording, then Supabase storage.
-5. Verify the guest demo before adding Supabase Auth accounts.
+1. Enter a name, block, participant group, and request. The four example buttons populate sample requests.
+2. Review the parsed activity, role, skill, language, generation preference, and weekly availability. Unknown or ambiguous details require confirmation.
+3. Show up to three compatible kakis. Cross-generation scores rank first, followed by confirmed shared time, exact skill, and stable ID. Unavailable times remain labelled "Time to arrange".
+4. Express interest. The API checks compatibility and the proposed slot again; Supabase retries use a stable request ID. Fixture mode explicitly requires a successful browser-local save.
 
-## Scaffold verification
+POST /api/parse accepts `{ text }` and returns ParsedRequest. POST /api/matches accepts
+a confirmed MatchRequest and returns `{ matches, storageMode }`. POST /api/interests
+accepts InterestDraft and returns a bounded recording status, storage mode, and optional
+record ID. There is no public interest-listing endpoint.
 
-Verified during setup: lint, TypeScript checking, and the production build pass.
-Local HTTP checks returned 200 for / and /results, and the expected 501 for each
-placeholder POST endpoint. Supabase connectivity and feature behavior are not yet tested.
+The current search lives in sessionStorage; saved-choice receipts live in localStorage.
+Names and request text never appear in URLs. Demo choices do not send messages or book venues.
+
+## Parser and scheduling limits
+
+This is an English keyword parser, not an LLM. It recognises the supported activities,
+common learning/teaching phrases, named weekdays, weekday/weekend groups, broad periods,
+and common time ranges. Unrecognised activities, multiple activities, relative dates,
+and ambiguous availability are reviewed in the form. It does not interpret arbitrary
+prose or translate requests. A Hokkien cooking request is a skill preference, not an
+assumed spoken-language preference.
+
+Availability uses recurring Singapore weekdays. Morning means 09:00–12:00, afternoon
+12:00–18:00, evening 18:00–21:00. The scheduler finds the earliest shared 60-minute window
+within the next 14 Singapore calendar days. Omitted availability permits a proposal
+that requires confirmation. All venue inventory and times are illustrative.
+
+## Accounts — next stretch goal
+
+Supabase Auth can add email sign-up/sign-in, saved profiles, and My interests after
+the guest demo. It needs a separate account-profile schema, user-owned interest records,
+cookie-aware user clients, and RLS ownership policies. Keep parent-managed family accounts
+and the guest path. The privileged data client must not become a signed-in user client.
+
+## Verification
+
+Lint, TypeScript checking, the production build, and 16 tests pass. Tests cover the
+four requests, independent age/role, explicit preferences, generation ranking, Singapore
+date boundaries, no shared slot, forged slots, repeatable SQL, public access denial,
+foreign keys, and duplicate interest protection.
+
+`npm run test:http` targets a local app at http://127.0.0.1:3100 by default. Set
+KAKI_TEST_ORIGIN to another local URL if needed. It verifies page routes and the complete
+parse → match → interest API flow, invalid inputs, empty results, invalid slots, and retries.
+In Supabase mode it creates one uniquely identified synthetic interest and removes it in
+cleanup; it requires the server key for that cleanup. Both Supabase and fixture HTTP
+flows have passed. No automated browser interaction/visual QA has been performed.

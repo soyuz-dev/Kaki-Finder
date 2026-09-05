@@ -10,5 +10,6 @@ export function createSupabaseServerClient() {
   // user client so private records are protected by user ownership policies.
   return createClient(url, secretKey, {
     auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(15_000) }) },
   });
 }

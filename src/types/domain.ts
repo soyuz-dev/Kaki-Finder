@@ -63,8 +63,12 @@ export interface Match {
 }
 export interface Interest {
   id: string;
+  clientRequestId: string;
   residentId: string;
   request: MatchRequest;
   suggestedSlot: SuggestedSlot | null;
   createdAt: string;
 }
+
+// Stable per selection, so retrying a save cannot create duplicate interest rows.
+export type InterestDraft = Omit<Interest, 'id' | 'createdAt'>;
