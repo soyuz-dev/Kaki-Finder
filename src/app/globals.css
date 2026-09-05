@@ -8,7 +8,40 @@
   --color-ink: #35291f;
   --color-muted: #705c4b;
   --color-line: #e8d9c6;
+  --color-avatar: #f8dcc0;
+  --color-avatar-ink: #7b3d0b;
+  --color-bridge-ink: #854514;
   --font-sans: Arial, Helvetica, sans-serif;
+}
+
+/* Shared tokens keep forms and results consistent. CSS follows device settings
+   before first paint, without a theme script or a flash of the wrong background. */
+:root {
+  color-scheme: light;
+  --field-background: #ffffff;
+  --field-placeholder: #786557;
+  --button-background: #c41e3a;
+  --button-hover: #a71931;
+  --selection-background: #fbd3ac;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --color-cream: #201a17;
+    --color-paper: #2c231e;
+    --color-ink: #fff3e6;
+    --color-muted: #cdb9a8;
+    --color-line: #6f5b4b;
+    --color-kampung-orange: #f6a45e;
+    --color-kampung-red: #ff98a8;
+    --color-avatar: #51351f;
+    --color-avatar-ink: #ffd5ae;
+    --color-bridge-ink: #f6bc8a;
+    --field-background: #241d19;
+    --field-placeholder: #baa392;
+    --selection-background: #70432b;
+  }
 }
 
 /* System fonts keep the demo independent of Google Fonts downloads. */
@@ -18,16 +51,16 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
 }
-::selection { background: #fbd3ac; }
+::selection { background: var(--selection-background); color: var(--color-ink); }
 :focus-visible { outline: 3px solid var(--color-kampung-red); outline-offset: 5px; }
 
 @layer components {
   .field-label { display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 600; }
-  .field { display: block; width: 100%; min-width: 0; min-height: 3rem; border: 1px solid var(--color-line); border-radius: 0.75rem; padding: 0.7rem 0.9rem; background: white; color: var(--color-ink); font: inherit; }
-  .field::placeholder { color: #897667; }
+  .field { display: block; width: 100%; min-width: 0; min-height: 3rem; border: 1px solid var(--color-line); border-radius: 0.75rem; padding: 0.7rem 0.9rem; background: var(--field-background); color: var(--color-ink); font: inherit; }
+  .field::placeholder { color: var(--field-placeholder); opacity: 1; }
   .field:focus { border-color: var(--color-kampung-orange); }
-  .primary-button { display: inline-flex; min-height: 3rem; align-items: center; justify-content: center; border-radius: 999px; padding: 0.85rem 1.5rem; background: var(--color-kampung-red); color: white; font-size: 0.9375rem; font-weight: 600; cursor: pointer; transition: background-color 150ms; }
-  .primary-button:hover { background: #a71931; }
+  .primary-button { display: inline-flex; min-height: 3rem; align-items: center; justify-content: center; border-radius: 999px; padding: 0.85rem 1.5rem; background: var(--button-background); color: white; font-size: 0.9375rem; font-weight: 600; cursor: pointer; transition: background-color 150ms; }
+  .primary-button:hover { background: var(--button-hover); }
   .primary-button:disabled { cursor: default; opacity: 0.75; }
   .summary-chip { border: 1px solid var(--color-line); border-radius: 999px; background: var(--color-paper); padding: 0.45rem 0.9rem; font-weight: 600; }
 }
