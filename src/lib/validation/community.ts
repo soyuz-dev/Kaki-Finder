@@ -53,6 +53,7 @@ export const parseInputSchema = z.strictObject({ text: z.string().trim().min(3).
 export const searchSessionSchema = z.strictObject({ id: z.uuid(), text: z.string().max(1000), request: confirmedMatchRequestSchema });
 export const matchesResponseSchema = z.strictObject({
   storageMode: z.enum(['fixtures', 'supabase']),
+  ownerId: z.uuid().nullable().default(null),
   matches: z.array(z.strictObject({ resident: residentSchema, bridgeScore: z.union([z.literal(40), z.literal(70), z.literal(100)]),
     reasons: z.array(z.string()), suggestedSlot: suggestedSlotSchema.nullable() })).max(3),
 });

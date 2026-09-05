@@ -16,8 +16,8 @@ function readReceipt(key: string): Receipt | null {
   } catch { return null; }
 }
 
-export function InterestButton({ match, session, storageMode }: { match: Match; session: SearchSession; storageMode: 'fixtures' | 'supabase' }) {
-  const key = `kaki-finder:interest:v1:${storageMode}:${session.id}:${match.resident.id}:${match.suggestedSlot?.startAt || 'arrange'}`;
+export function InterestButton({ match, session, storageMode, ownerId }: { match: Match; session: SearchSession; storageMode: 'fixtures' | 'supabase'; ownerId: string | null }) {
+  const key = `kaki-finder:interest:v2:${ownerId || 'guest'}:${storageMode}:${session.id}:${match.resident.id}:${match.suggestedSlot?.startAt || 'arrange'}`;
   const [saved, setSaved] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -37,7 +37,7 @@ export function InterestButton({ match, session, storageMode }: { match: Match; 
       localStorage.setItem(key, JSON.stringify(receipt));
     } catch { setError('Please allow browser storage so we can remember this selection and prevent duplicate requests.'); setBusy(false); return; }
     try {
-      const result = await postJson('/api/interests', { clientRequestId: receipt.requestId, residentId: match.resident.id, request: session.request, suggestedSlot: match.suggestedSlot }, interestResponseSchema);
+      const result = await postJson('/api/interests', { clientRequestId: receipt.requestId, residentId: match.resident.id, request: session.request, suggestedSlot: match.suggestedSlot, expectedAccountId: ownerId }, interestResponseSchema);
       if (result.storageMode !== storageMode) throw new Error('The demo storage mode changed. Please refresh your results.');
       if (result.status === 'local-save-required') {
         localStorage.setItem(key, JSON.stringify({ ...receipt, recorded: true }));
@@ -52,7 +52,7 @@ export function InterestButton({ match, session, storageMode }: { match: Match; 
   }
   return <div className="mt-auto pt-6">
     <button className={`primary-button w-full ${saved ? 'bg-[#336749] hover:bg-[#336749]' : ''}`} onClick={expressInterest} disabled={busy || saved}>{saved ? '✓ Interest recorded' : busy ? 'Recording your interest…' : 'Express interest'}</button>
-    {saved && <p className="mt-3 text-xs leading-5 text-muted" role="status">{storageMode === 'fixtures' ? 'Saved on this device. ' : 'Recorded for this demo. '}No message or facility booking has been sent.</p>}
+    {saved && <p className="mt-3 text-xs leading-5 text-muted" role="status">{storageMode === 'fixtures' ? 'Saved on this device. ' : ownerId ? 'Saved to My interests in your account. ' : 'Recorded for this demo as a guest. '}No message or facility booking has been sent.</p>}
     {error && <p className="mt-3 text-sm leading-6 text-kampung-red" role="alert">{error}</p>}
   </div>;
 }

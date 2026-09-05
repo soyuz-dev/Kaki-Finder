@@ -54,7 +54,7 @@ src/
     matching/                Compatibility and generation bridge ranking
     scheduling/              Singapore-time facility suggestions
     interests/               Express Interest flow
-    auth/                    Optional future accounts
+    auth/                    Email accounts, profiles, and private interests
   data/                      Validated resident and facility JSON fixtures
   lib/
     api/                     Response helpers
@@ -78,7 +78,7 @@ tests/                       Parser, matching, schedule, and database checks
 - English UI/parser; English, Mandarin, Tamil, Malay, and Hokkien matching preferences.
 - Fixture reads run without keys; Supabase stays optional. Failed database writes never silently fall back. Fixture interests are saved in browser local storage.
 - Facility slots are labelled demo suggestions, never reservations.
-- Interest recording sends no messages. Accounts are a stretch goal after the guest demo works.
+- Interest recording sends no messages. Supabase accounts are optional; guest matching remains available.
 
 ## Optional Supabase
 
@@ -91,8 +91,8 @@ tests/                       Parser, matching, schedule, and database checks
 
 The secret API key authorizes data operations but is not a database migration credential;
 run the schema through the SQL Editor. No key or real resident information is embedded in SQL.
-All three tables deny direct access to anon/authenticated clients. Future Auth will add
-a separate real-user profiles table and ownership policies before exposing private account views.
+Anonymous clients cannot access the tables. Authenticated clients can access only their
+own profiles and interests through ownership policies; the demo directory stays server-only.
 Never expose the secret key or use the privileged client as a signed-in user session.
 
 ## Vercel
@@ -100,7 +100,7 @@ Never expose the secret key or use the privileged client as a signed-in user ses
 Import this repository as Next.js, select Node.js 22.x or a compatible newer runtime,
 and use the default next build configuration. Add Supabase environment variables only
 for Supabase mode. Set DATA_SOURCE=supabase and the same Supabase environment values
-in Vercel; keep the secret server-only. No Vercel deployment has been created yet.
+in Vercel; keep the secret server-only. Set APP_URL to the deployed HTTPS origin for auth emails.
 
 ## Guest workflow and API
 
@@ -110,8 +110,8 @@ in Vercel; keep the secret server-only. No Vercel deployment has been created ye
 4. Express interest. The API checks compatibility and the proposed slot again; Supabase retries use a stable request ID. Fixture mode explicitly requires a successful browser-local save.
 
 POST /api/parse accepts `{ text }` and returns ParsedRequest. POST /api/matches accepts
-a confirmed MatchRequest and returns `{ matches, storageMode }`. POST /api/interests
-accepts InterestDraft and returns a bounded recording status, storage mode, and optional
+a confirmed MatchRequest and returns `{ matches, storageMode, ownerId }`. POST /api/interests
+accepts InterestDraft plus `expectedAccountId` (null for guests) and returns a bounded recording status, storage mode, and optional
 record ID. There is no public interest-listing endpoint.
 
 The current search lives in sessionStorage; saved-choice receipts live in localStorage.
@@ -131,19 +131,27 @@ Availability uses recurring Singapore weekdays. Morning means 09:00–12:00, aft
 within the next 14 Singapore calendar days. Omitted availability permits a proposal
 that requires confirmation. All venue inventory and times are illustrative.
 
-## Accounts — next stretch goal
+## Accounts
 
-Supabase Auth can add email sign-up/sign-in, saved profiles, and My interests after
-the guest demo. It needs a separate account-profile schema, user-owned interest records,
-cookie-aware user clients, and RLS ownership policies. Keep parent-managed family accounts
-and the guest path. The privileged data client must not become a signed-in user client.
+Email sign-up/sign-in, confirmation, sign-out, password recovery/change, private profiles,
+and My interests are implemented. Parents manage family accounts. Saved profiles prefill
+new requests; profiles are not yet included in the fictional matching directory.
+
+For an existing database, run `supabase/migrations/202609050002_accounts.sql` in the
+Supabase SQL Editor. New databases can run the full `supabase/setup.sql`. Set APP_URL
+and configure the callback URLs in Supabase Authentication before testing email links.
+See `src/features/auth/README.md` for the exact URL setup, security design and test steps.
 
 ## Verification
 
-Lint, TypeScript checking, the production build, and 16 tests pass. Tests cover the
+The automated suite includes 18 tests. Tests cover the
 four requests, independent age/role, explicit preferences, generation ranking, Singapore
 date boundaries, no shared slot, forged slots, repeatable SQL, public access denial,
-foreign keys, and duplicate interest protection.
+foreign keys, duplicate interest protection, and account ownership isolation.
+
+`npm run test:auth` verifies live sign-in/out and cookie sessions using temporary confirmed
+accounts without sending email. After the account SQL is applied it also verifies profile
+storage, interest history, ownership, retries and removal. It deletes its temporary users.
 
 `npm run test:http` targets a local app at http://127.0.0.1:3100 by default. Set
 KAKI_TEST_ORIGIN to another local URL if needed. It verifies page routes and the complete

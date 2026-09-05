@@ -32,7 +32,7 @@ export function assertSameInterest(existing: Interest, draft: InterestDraft) {
 }
 
 /** Inject a trusted server client. No browser client should call this repository. */
-export function createSupabaseRepository(client: SupabaseClient): CommunityRepository {
+export function createSupabaseRepository(client: SupabaseClient, ownerId: string | null = null): CommunityRepository {
   return {
     async listResidents() {
       const { data, error } = await client.from('residents').select('*').order('id');
@@ -47,7 +47,7 @@ export function createSupabaseRepository(client: SupabaseClient): CommunityRepos
     async recordInterest(input) {
       const draft = interestDraftSchema.parse(input);
       const row = { client_request_id: draft.clientRequestId, resident_id: draft.residentId,
-        request: draft.request, suggested_slot: draft.suggestedSlot };
+        request: draft.request, suggested_slot: draft.suggestedSlot, ...(ownerId ? { user_id: ownerId } : {}) };
       // DO NOTHING on collision prevents a retry from modifying an earlier selection.
       const inserted = await client.from('interests').upsert(row, {
         onConflict: 'client_request_id', ignoreDuplicates: true,
@@ -56,6 +56,8 @@ export function createSupabaseRepository(client: SupabaseClient): CommunityRepos
       if (inserted.data) return mapInterestRow(inserted.data);
       const existing = await client.from('interests').select('*').eq('client_request_id', draft.clientRequestId).single();
       if (existing.error) databaseFailure('confirm interest', existing.error.code);
+      // Guest retries must never claim or reveal a signed-in resident's selection.
+      if ((existing.data.user_id ?? null) !== ownerId) throw new RepositoryError('IDEMPOTENCY_CONFLICT', 'Please refresh your results before saving this selection.');
       const interest = mapInterestRow(existing.data);
       assertSameInterest(interest, draft);
       return interest;

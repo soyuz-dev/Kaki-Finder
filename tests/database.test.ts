@@ -9,7 +9,7 @@ test('Postgres setup is repeatable, matches fixtures, protects tables, and prese
   const db = new PGlite();
   try {
     await db.exec('create role anon; create role authenticated; create role service_role bypassrls;');
-    const setup = await readFile('supabase/setup.sql', 'utf8');
+    const setup = await readFile('supabase/migrations/202609050001_community_data.sql', 'utf8') + '\n' + await readFile('supabase/seeds/demo.sql', 'utf8');
     await db.exec(setup);
     const residentRows = await db.query('select * from public.residents order by id');
     assert.deepEqual(residentRows.rows.map(mapResidentRow), residents);

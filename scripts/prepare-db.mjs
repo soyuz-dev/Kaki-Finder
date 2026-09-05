@@ -40,5 +40,7 @@ notify pgrst, 'reload schema';
 `;
 writeFileSync(path.join(root, 'supabase/seeds/demo.sql'), seed);
 const migration = read('supabase/migrations/202609050001_community_data.sql');
-writeFileSync(path.join(root, 'supabase/setup.sql'), '-- Kaki Finder: run this entire file in your Supabase project SQL Editor.\n-- Repeatable setup; does not delete interest records or create accounts.\n\n' + migration + '\n' + seed);
+const accounts = read('supabase/migrations/202609050002_accounts.sql');
+// Apply account grants last, since the original foundation revokes direct access.
+writeFileSync(path.join(root, 'supabase/setup.sql'), '-- Kaki Finder: run this entire file in your Supabase project SQL Editor.\n-- Repeatable setup; preserves records and adds account ownership policies.\n\n' + migration + '\n' + seed + '\n' + accounts);
 console.log('Prepared supabase/setup.sql: 15 residents, 5 demo facilities, private interest storage.');

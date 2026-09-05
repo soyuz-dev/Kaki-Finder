@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Activity, ActivityRole, AvailabilityWindow, Language, ParsedRequest, ParticipantGroup } from '@/types/domain';
 import { ACTIVITY_LABELS, LANGUAGE_LABELS, PARTICIPANT_GROUP_LABELS, REQUEST_EXAMPLES, ROLE_LABELS, SEARCH_STORAGE_KEY, WEEKDAYS } from '@/lib/constants';
 import { confirmedMatchRequestSchema, parsedRequestSchema, searchSessionSchema } from '@/lib/validation/community';
 import { postJson } from '@/lib/api/client';
+import { z } from 'zod';
+import { profileSchema } from '@/lib/validation/account';
+import { accountRequest } from '@/features/auth/client';
 
 export function RequestForm() {
   const router = useRouter();
@@ -16,13 +19,20 @@ export function RequestForm() {
   const [parsed, setParsed] = useState<ParsedRequest | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const edited = useRef(false);
   useEffect(() => {
     let active = true;
     async function restore() {
       await Promise.resolve();
       try {
         const raw = sessionStorage.getItem(SEARCH_STORAGE_KEY);
-        if (!raw || !active) return;
+        if (!active) return;
+        if (!raw) {
+          // Saved profile details are a convenience; guest matching works without them.
+          const saved = await accountRequest('/api/account', z.object({ profile: profileSchema.nullable() }));
+          if (active && !edited.current && saved.profile) { setName(saved.profile.name); setBlock(saved.profile.block); setGroup(saved.profile.participantGroup); }
+          return;
+        }
         const saved = searchSessionSchema.parse(JSON.parse(raw));
         setName(saved.request.name); setBlock(saved.request.block); setGroup(saved.request.participantGroup);
         setText(saved.text); setParsed(saved.request.criteria);
@@ -61,7 +71,7 @@ export function RequestForm() {
       <h2 id="request-heading" className="text-2xl font-semibold tracking-tight">What brings you here?</h2>
       <span className="rounded-full bg-cream px-3 py-1 text-xs font-semibold text-muted">No account needed</span>
     </div>
-    <form onSubmit={interpret}>
+    <form onSubmit={interpret} onChangeCapture={() => { edited.current = true; }}>
       <div className="grid grid-cols-[1.5fr_1fr] gap-4">
         <div><label className="field-label" htmlFor="resident-name">Your name</label><input id="resident-name" autoComplete="given-name" className="field" value={name} onChange={e => setName(e.target.value)} maxLength={80} placeholder="What should we call you?" required /></div>
         <div><label className="field-label" htmlFor="resident-block">Block number</label><input id="resident-block" className="field" value={block} onChange={e => setBlock(e.target.value)} maxLength={20} placeholder="e.g. 43" required /></div>

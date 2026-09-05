@@ -12,9 +12,11 @@
     "db:prepare": "node scripts/prepare-db.mjs",
     "db:check": "node --env-file-if-exists=.env.local scripts/run-typescript.mjs db-check",
     "db:verify": "node --env-file-if-exists=.env.local scripts/run-typescript.mjs db-verify",
-    "test:http": "node --env-file-if-exists=.env.local scripts/http-smoke.mjs"
+    "test:http": "node --env-file-if-exists=.env.local scripts/http-smoke.mjs",
+    "test:auth": "node --env-file-if-exists=.env.local scripts/auth-smoke.mjs"
   },
   "dependencies": {
+    "@supabase/ssr": "0.12.6",
     "@supabase/supabase-js": "2.115.0",
     "@types/node": "26.4.1",
     "@types/react": "19.2.18",
