@@ -1,0 +1,760 @@
+[
+  {
+    "id": "11111111-1111-4111-8111-000000000001",
+    "name": "Tan Ah Seng",
+    "ageRange": "70s",
+    "participantGroup": "senior",
+    "block": "41",
+    "languages": [
+      "english",
+      "mandarin",
+      "hokkien"
+    ],
+    "bio": "I have played chess at the void deck for years. Come learn a few opening moves, and perhaps you can teach me a guitar chord or two.",
+    "intents": [
+      {
+        "activity": "chess",
+        "role": "teacher",
+        "skill": "beginner chess"
+      },
+      {
+        "activity": "guitar",
+        "role": "learner",
+        "skill": null
+      },
+      {
+        "activity": "badminton",
+        "role": "partner",
+        "skill": null
+      }
+    ],
+    "availability": [
+      {
+        "day": 2,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 4,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000002",
+    "name": "Lim Mei Hwa",
+    "ageRange": "60s (65–69)",
+    "participantGroup": "senior",
+    "block": "43",
+    "languages": [
+      "english",
+      "mandarin",
+      "hokkien"
+    ],
+    "bio": "My Hokkien recipes are measured in pinches and happy memories. I would love to pass them on, and learn how to photograph our dishes.",
+    "intents": [
+      {
+        "activity": "cooking",
+        "role": "teacher",
+        "skill": "Hokkien cooking"
+      },
+      {
+        "activity": "photography",
+        "role": "learner",
+        "skill": null
+      },
+      {
+        "activity": "chess",
+        "role": "learner",
+        "skill": null
+      }
+    ],
+    "availability": [
+      {
+        "day": 2,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 4,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000003",
+    "name": "Abdul Rahman",
+    "ageRange": "70s",
+    "participantGroup": "senior",
+    "block": "45",
+    "languages": [
+      "english",
+      "malay"
+    ],
+    "bio": "My corridor is full of herbs and little experiments. Children are welcome to get their hands muddy. I also enjoy a gentle game of badminton.",
+    "intents": [
+      {
+        "activity": "gardening",
+        "role": "teacher",
+        "skill": "herbs and container gardening"
+      },
+      {
+        "activity": "badminton",
+        "role": "partner",
+        "skill": null
+      },
+      {
+        "activity": "coding",
+        "role": "learner",
+        "skill": "beginner coding"
+      }
+    ],
+    "availability": [
+      {
+        "day": 2,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 4,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000004",
+    "name": "Mary D'Souza",
+    "ageRange": "70s",
+    "participantGroup": "senior",
+    "block": "47",
+    "languages": [
+      "english",
+      "tamil"
+    ],
+    "bio": "After years of teaching English, I still love a good story. Bring a book or practise a conversation with me; I am learning chess myself.",
+    "intents": [
+      {
+        "activity": "language",
+        "role": "teacher",
+        "skill": "English tutoring"
+      },
+      {
+        "activity": "chess",
+        "role": "learner",
+        "skill": null
+      },
+      {
+        "activity": "gardening",
+        "role": "learner",
+        "skill": null
+      }
+    ],
+    "availability": [
+      {
+        "day": 2,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 4,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000005",
+    "name": "Lakshmi Subramaniam",
+    "ageRange": "60s (65–69)",
+    "participantGroup": "senior",
+    "block": "49",
+    "languages": [
+      "english",
+      "tamil"
+    ],
+    "bio": "Traditional dance has kept me smiling for decades. I can share gentle beginner steps, and would love some help getting started with a fitness routine.",
+    "intents": [
+      {
+        "activity": "dance",
+        "role": "teacher",
+        "skill": "traditional Indian dance"
+      },
+      {
+        "activity": "fitness",
+        "role": "learner",
+        "skill": null
+      },
+      {
+        "activity": "cooking",
+        "role": "learner",
+        "skill": "Hokkien cooking"
+      }
+    ],
+    "availability": [
+      {
+        "day": 2,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 4,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000006",
+    "name": "Cheryl Tan",
+    "ageRange": "20s",
+    "participantGroup": "young-adult",
+    "block": "41",
+    "languages": [
+      "english",
+      "mandarin"
+    ],
+    "bio": "I work near Novena and would love to know the neighbours I wave to. Happy to organise a friendly badminton game, or learn chess over a kopi.",
+    "intents": [
+      {
+        "activity": "badminton",
+        "role": "partner",
+        "skill": null
+      },
+      {
+        "activity": "chess",
+        "role": "learner",
+        "skill": "beginner chess"
+      },
+      {
+        "activity": "cooking",
+        "role": "learner",
+        "skill": "Hokkien cooking"
+      }
+    ],
+    "availability": [
+      {
+        "day": 2,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 4,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000007",
+    "name": "Muhammad Irfan",
+    "ageRange": "30s",
+    "participantGroup": "young-adult",
+    "block": "43",
+    "languages": [
+      "english",
+      "malay"
+    ],
+    "bio": "I build software by day and am happy to explain coding slowly, one step at a time. My balcony plants could use an experienced neighbour's advice.",
+    "intents": [
+      {
+        "activity": "coding",
+        "role": "teacher",
+        "skill": "beginner coding"
+      },
+      {
+        "activity": "gardening",
+        "role": "learner",
+        "skill": null
+      },
+      {
+        "activity": "chess",
+        "role": "learner",
+        "skill": null
+      }
+    ],
+    "availability": [
+      {
+        "day": 2,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 4,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000008",
+    "name": "Priya Nair",
+    "ageRange": "20s",
+    "participantGroup": "young-adult",
+    "block": "45",
+    "languages": [
+      "english",
+      "tamil"
+    ],
+    "bio": "I have a spare guitar and plenty of patience. I would love to trade a few beginner chords for a cooking lesson or a new friendship.",
+    "intents": [
+      {
+        "activity": "guitar",
+        "role": "teacher",
+        "skill": "beginner guitar"
+      },
+      {
+        "activity": "cooking",
+        "role": "learner",
+        "skill": "Hokkien cooking"
+      },
+      {
+        "activity": "dance",
+        "role": "learner",
+        "skill": "traditional Indian dance"
+      }
+    ],
+    "availability": [
+      {
+        "day": 2,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 4,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000009",
+    "name": "Daniel Wong",
+    "ageRange": "30s",
+    "participantGroup": "young-adult",
+    "block": "47",
+    "languages": [
+      "english",
+      "mandarin"
+    ],
+    "bio": "An evening walk helps me unwind after work. I can share gentle exercise ideas, and I am always keen for badminton or a gardening lesson.",
+    "intents": [
+      {
+        "activity": "fitness",
+        "role": "teacher",
+        "skill": "gentle fitness"
+      },
+      {
+        "activity": "badminton",
+        "role": "partner",
+        "skill": null
+      },
+      {
+        "activity": "jogging",
+        "role": "partner",
+        "skill": null
+      },
+      {
+        "activity": "gardening",
+        "role": "learner",
+        "skill": null
+      }
+    ],
+    "availability": [
+      {
+        "day": 2,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 4,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000010",
+    "name": "Nur Aisyah",
+    "ageRange": "30s",
+    "participantGroup": "young-adult",
+    "block": "49",
+    "languages": [
+      "english",
+      "malay"
+    ],
+    "bio": "I enjoy photographing everyday moments around Pek Kio. I can show you how to take a lovely phone photo, and would be delighted to learn a family recipe.",
+    "intents": [
+      {
+        "activity": "photography",
+        "role": "teacher",
+        "skill": "phone photography"
+      },
+      {
+        "activity": "cooking",
+        "role": "learner",
+        "skill": "Hokkien cooking"
+      },
+      {
+        "activity": "language",
+        "role": "learner",
+        "skill": "Mandarin conversation"
+      },
+      {
+        "activity": "chess",
+        "role": "teacher",
+        "skill": "beginner chess"
+      }
+    ],
+    "availability": [
+      {
+        "day": 2,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 4,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000011",
+    "name": "Jason & Wei Ling",
+    "ageRange": "Parents in their 40s",
+    "participantGroup": "family",
+    "block": "41",
+    "languages": [
+      "english",
+      "mandarin"
+    ],
+    "bio": "Our eight-year-old asks how every leaf grows. We would love to garden with an experienced neighbour and learn chess together as a family.",
+    "intents": [
+      {
+        "activity": "gardening",
+        "role": "learner",
+        "skill": "herbs and container gardening"
+      },
+      {
+        "activity": "chess",
+        "role": "learner",
+        "skill": "beginner chess"
+      },
+      {
+        "activity": "cooking",
+        "role": "learner",
+        "skill": "Hokkien cooking"
+      }
+    ],
+    "availability": [
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000012",
+    "name": "Siti & Farid",
+    "ageRange": "Parents in their 30s",
+    "participantGroup": "family",
+    "block": "43",
+    "languages": [
+      "english",
+      "malay"
+    ],
+    "bio": "Our children love helping in the kitchen and meeting the aunties and uncles nearby. We can share Malay conversation and would enjoy learning to grow herbs.",
+    "intents": [
+      {
+        "activity": "gardening",
+        "role": "learner",
+        "skill": null
+      },
+      {
+        "activity": "cooking",
+        "role": "learner",
+        "skill": null
+      },
+      {
+        "activity": "language",
+        "role": "teacher",
+        "skill": "Malay conversation"
+      },
+      {
+        "activity": "language",
+        "role": "learner",
+        "skill": "English tutoring"
+      }
+    ],
+    "availability": [
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000013",
+    "name": "Arun & Kavitha",
+    "ageRange": "Parents in their 40s",
+    "participantGroup": "family",
+    "block": "45",
+    "languages": [
+      "english",
+      "tamil"
+    ],
+    "bio": "We would like our children to know the people behind the friendly waves in our block. Gardening, traditional dance, and stories in another language sound lovely.",
+    "intents": [
+      {
+        "activity": "gardening",
+        "role": "learner",
+        "skill": null
+      },
+      {
+        "activity": "dance",
+        "role": "learner",
+        "skill": "traditional Indian dance"
+      },
+      {
+        "activity": "language",
+        "role": "learner",
+        "skill": "Mandarin conversation"
+      },
+      {
+        "activity": "language",
+        "role": "teacher",
+        "skill": "Tamil conversation"
+      }
+    ],
+    "availability": [
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000014",
+    "name": "Grace & Samuel",
+    "ageRange": "Parents in their 30s",
+    "participantGroup": "family",
+    "block": "47",
+    "languages": [
+      "english",
+      "mandarin"
+    ],
+    "bio": "We are raising two curious little cooks. We would love to learn Hokkien dishes and enjoy conversation with neighbours from another generation.",
+    "intents": [
+      {
+        "activity": "cooking",
+        "role": "learner",
+        "skill": "Hokkien cooking"
+      },
+      {
+        "activity": "language",
+        "role": "teacher",
+        "skill": "Mandarin conversation"
+      },
+      {
+        "activity": "language",
+        "role": "learner",
+        "skill": "Malay conversation"
+      },
+      {
+        "activity": "gardening",
+        "role": "teacher",
+        "skill": "herbs and container gardening"
+      }
+    ],
+    "availability": [
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000015",
+    "name": "Goh Kok Leong",
+    "ageRange": "40s",
+    "participantGroup": "adult",
+    "block": "49",
+    "languages": [
+      "english",
+      "mandarin",
+      "hokkien"
+    ],
+    "bio": "I am usually up for an easy jog or a relaxed badminton game. Beginners are welcome; good company matters more than keeping score.",
+    "intents": [
+      {
+        "activity": "badminton",
+        "role": "partner",
+        "skill": null
+      },
+      {
+        "activity": "jogging",
+        "role": "partner",
+        "skill": null
+      },
+      {
+        "activity": "cooking",
+        "role": "teacher",
+        "skill": "Hokkien cooking"
+      },
+      {
+        "activity": "chess",
+        "role": "learner",
+        "skill": null
+      }
+    ],
+    "availability": [
+      {
+        "day": 2,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 4,
+        "start": "18:00",
+        "end": "21:00"
+      },
+      {
+        "day": 6,
+        "start": "09:00",
+        "end": "12:00"
+      },
+      {
+        "day": 7,
+        "start": "09:00",
+        "end": "12:00"
+      }
+    ]
+  }
+]
