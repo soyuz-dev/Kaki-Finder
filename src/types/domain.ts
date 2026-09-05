@@ -15,6 +15,8 @@ export interface ActivityIntent {
   skill: string | null;
 }
 export interface Resident {
+  /** Legacy fixture profiles omit this flag; registered neighbours explicitly use false. */
+  isDemo?: boolean;
   id: string;
   name: string;
   ageRange: string;

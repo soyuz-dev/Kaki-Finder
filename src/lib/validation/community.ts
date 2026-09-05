@@ -13,6 +13,7 @@ export const availabilitySchema = z.strictObject({
 const skillSchema = z.string().trim().min(1).max(120).nullable();
 export const intentSchema = z.strictObject({ activity: activitySchema, role: roleSchema, skill: skillSchema });
 export const residentSchema = z.strictObject({
+  isDemo: z.boolean().optional(),
   id: z.uuid(), name: z.string().trim().min(1).max(80), ageRange: z.string().min(1).max(40),
   participantGroup: participantGroupSchema, block: z.string().trim().min(1).max(20),
   languages: z.array(languageSchema).min(1).max(5), bio: z.string().min(1).max(600),

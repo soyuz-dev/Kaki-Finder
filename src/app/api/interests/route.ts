@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     const account = await identity();
     if ((account?.user.id ?? null) !== expectedAccountId) throw new HttpError(409, 'ACCOUNT_CHANGED', 'Your account changed. Please refresh your results before expressing interest.');
     const repository = createCommunityRepository();
-    const [residents, facilities] = await Promise.all([repository.listResidents(), repository.listFacilities()]);
+    const [residents, facilities] = await Promise.all([repository.listResidents(account?.user.id), repository.listFacilities()]);
     const resident = residents.find(r => r.id === input.residentId);
     if (!resident || !compatibleIntents(input.request, resident).length) throw new HttpError(400, 'INVALID_MATCH', 'This kaki is no longer compatible. Please refresh your results.');
     const slot = input.suggestedSlot ? validateSlot(input.request, resident, facilities, input.suggestedSlot) : null;

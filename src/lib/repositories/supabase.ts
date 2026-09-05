@@ -10,7 +10,7 @@ export function mapResidentRow(value: unknown) {
   const row = rowSchema.parse(value);
   return residentSchema.parse({ id: row.id, name: row.name, ageRange: row.age_range,
     participantGroup: row.participant_group, block: row.block, languages: row.languages,
-    bio: row.bio, intents: row.intents, availability: row.availability });
+    bio: row.bio, intents: row.intents, availability: row.availability, ...(row.is_demo === false ? { isDemo: false } : {}) });
 }
 export function mapFacilityRow(value: unknown) {
   const row = rowSchema.parse(value);
@@ -34,8 +34,11 @@ export function assertSameInterest(existing: Interest, draft: InterestDraft) {
 /** Inject a trusted server client. No browser client should call this repository. */
 export function createSupabaseRepository(client: SupabaseClient, ownerId: string | null = null): CommunityRepository {
   return {
-    async listResidents() {
-      const { data, error } = await client.from('residents').select('*').order('id');
+    async listResidents(excludeOwnerId) {
+      let query = client.from('residents').select('*').eq('is_active', true).order('id');
+      // The caller supplies a verified account ID, not a name or request-body ID.
+      if (excludeOwnerId) query = query.or(`owner_id.is.null,owner_id.neq.${z.uuid().parse(excludeOwnerId)}`);
+      const { data, error } = await query;
       if (error) databaseFailure('load residents', error.code);
       return (data ?? []).map(mapResidentRow);
     },

@@ -9,8 +9,9 @@ export async function GET() {
     // This client carries the resident's session: RLS enforces ownership too.
     const { data, error } = await account.client.from('interests').select('*').eq('user_id', account.user.id).order('created_at', { ascending: false }).limit(100);
     if (error) accountDatabaseError(error.code);
-    const residents = await createCommunityRepository().listResidents();
-    return jsonResponse({ interests: (data || []).map(row => ({ ...mapInterestRow(row), residentName: residents.find(r => r.id === row.resident_id)?.name || 'Your kaki' })) });
+    // Empty histories need no directory access, so a new account can still load.
+    const residents = data?.length ? await createCommunityRepository().listResidents() : [];
+    return jsonResponse({ interests: (data || []).map(row => ({ ...mapInterestRow(row), residentName: residents.find(r => r.id === row.resident_id)?.name || 'Neighbour no longer discoverable' })) });
   } catch (error) { return apiError(error); }
 }
 export async function DELETE(request: Request) {

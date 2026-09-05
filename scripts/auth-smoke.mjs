@@ -7,6 +7,7 @@ assert(['127.0.0.1', 'localhost'].includes(new URL(origin).hostname), 'Auth smok
 assert(process.env.SUPABASE_URL && process.env.SUPABASE_SECRET_KEY, 'Supabase configuration required.');
 const admin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
 const created = [];
+const directoryRows = [];
 function browser() {
   const jar = new Map();
   return async (path, body, method = body ? 'POST' : 'GET', extra = {}) => {
@@ -42,7 +43,7 @@ try {
     users.push({ id: data.user.id, request });
   }
   const [a, b] = users;
-  const profile = { name: 'Temporary auth test', block: '41', participantGroup: 'senior', languages: ['english'], bio: 'Synthetic account; removed after verification.' };
+  const profile = { name: 'Temporary auth test', block: '41', participantGroup: 'senior', languages: ['english'], bio: 'Synthetic account; removed after verification.', discoverable: false, intents: [], availability: [] };
   const saved = await a.request('/api/account', profile, 'PUT');
   if (saved.status === 503 && saved.data.error.code === 'ACCOUNT_DATABASE' && saved.data.error.message.includes('not ready yet')) {
     console.log('Live sign-in, session verification, private cookies, guest denial and cross-site rejection passed. Account SQL still needs to be applied; profile/interest HTTP checks deferred.');
@@ -72,6 +73,32 @@ try {
     await a.request('/api/account/interests', { id: first.data.id }, 'DELETE');
     assert.equal((await a.request('/api/account/interests')).data.interests.length, 0);
     console.log('Live account checks passed: profiles, private interest lists, duplicate retries, account switching, forged ownership rejection and owner-only removal.');
+    const publicProfile = { ...profile, name: 'Temporary discovery check', block: '43', participantGroup: 'young-adult',
+      intents: [{ activity: 'chess', role: 'teacher', skill: null }], availability: [{ day: 6, start: '09:00', end: '12:00' }] };
+    assert.equal((await b.request('/api/account', publicProfile, 'PUT')).status, 200);
+    assert(!(await a.request('/api/matches', request)).data.matches.some(m => m.resident.name === publicProfile.name));
+    assert.equal((await b.request('/api/account', { ...publicProfile, discoverable: true, intents: [] }, 'PUT')).status, 400);
+    assert.equal((await b.request('/api/account', { ...publicProfile, discoverable: true }, 'PUT')).status, 200);
+    const real = (await a.request('/api/matches', request)).data.matches.find(m => m.resident.name === publicProfile.name);
+    assert(real, 'Published neighbour should appear in matching results.');
+    directoryRows.push(real.resident.id);
+    assert.equal(real.resident.isDemo, false);
+    assert.notEqual(real.resident.id, b.id);
+    assert.equal('email' in real.resident, false);
+    assert.equal('owner_id' in real.resident, false);
+    assert(!(await b.request('/api/matches', request)).data.matches.some(m => m.resident.id === real.resident.id), 'Self-match must be excluded even when request name differs.');
+    const realDraft = { ...draft, clientRequestId: randomUUID(), residentId: real.resident.id, suggestedSlot: real.suggestedSlot };
+    const realSaved = await a.request('/api/interests', realDraft);
+    assert.equal(realSaved.status, 200);
+    assert.equal((await b.request('/api/account', publicProfile, 'PUT')).status, 200);
+    assert(!(await a.request('/api/matches', request)).data.matches.some(m => m.resident.id === real.resident.id));
+    assert.equal((await a.request('/api/interests', { ...realDraft, clientRequestId: randomUUID() })).status, 400);
+    const hiddenHistory = (await a.request('/api/account/interests')).data.interests;
+    assert.equal(hiddenHistory.find(i => i.id === realSaved.data.id).residentName, 'Neighbour no longer discoverable');
+    await a.request('/api/account/interests', { id: realSaved.data.id }, 'DELETE');
+    assert.equal((await b.request('/api/account', { ...publicProfile, discoverable: true }, 'PUT')).status, 200);
+    assert((await a.request('/api/matches', request)).data.matches.some(m => m.resident.id === real.resident.id));
+    console.log('Live discovery checks passed: private by default, publication, real matching, no self-match or email exposure, hiding, retained history, and republishing.');
   }
   for (const user of users) {
     assert.equal((await user.request('/api/auth', { action: 'sign-out' })).status, 200);
@@ -80,9 +107,19 @@ try {
   }
   console.log('Sign-out and session clearing passed.');
 } finally {
+  // Capture only this run's synthetic directory IDs even if verification stopped early.
+  for (const id of created) {
+    const { data } = await admin.from('residents').select('id').eq('owner_id', id);
+    for (const row of data || []) if (!directoryRows.includes(row.id)) directoryRows.push(row.id);
+  }
   for (const id of created) {
     const { error } = await admin.auth.admin.deleteUser(id);
     assert(!error, `Cleanup failed for temporary test account ${id}`);
+  }
+  for (const id of directoryRows) {
+    const { error } = await admin.from('residents').delete().eq('id', id).eq('is_active', false).is('owner_id', null);
+    // A real user's independently saved selection must never be deleted by cleanup.
+    assert(!error || error.code === '23503', 'Could not clean up synthetic directory row.');
   }
   console.log(`Removed ${created.length} temporary accounts. No emails sent.`);
 }

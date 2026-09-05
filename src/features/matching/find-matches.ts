@@ -38,6 +38,7 @@ export function findMatches(request: MatchRequest, residents: Resident[], facili
     return [{ resident, bridgeScore: bridgeScore(request.participantGroup, resident.participantGroup), suggestedSlot, reasons, exactSkill }];
   });
   return ranked.sort((a, b) => b.bridgeScore - a.bridgeScore ||
+    Number(b.resident.isDemo === false) - Number(a.resident.isDemo === false) ||
     Number(!!b.suggestedSlot && !b.suggestedSlot.needsConfirmation) - Number(!!a.suggestedSlot && !a.suggestedSlot.needsConfirmation) ||
     Number(b.exactSkill) - Number(a.exactSkill) || a.resident.id.localeCompare(b.resident.id))
     .slice(0, 3).map(({ resident, bridgeScore, suggestedSlot, reasons }) => ({ resident, bridgeScore, suggestedSlot, reasons }));

@@ -31,6 +31,6 @@ export default function Home() {
         <div className="mt-8 grid gap-8 md:grid-cols-3">{steps.map((step, i) => <div key={step.title}><span className="text-sm font-bold text-kampung-red">0{i + 1}</span><h3 className="mt-3 text-lg font-semibold">{step.title}</h3><p className="mt-3 text-sm leading-7 text-muted">{step.detail}</p></div>)}</div>
       </section>
     </main>
-    <footer className="border-t border-line"><div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-3 px-5 py-7 text-xs leading-6 text-muted sm:px-10"><span>Kampung Connect · Share skills, build bonds.</span><span>Hackathon demo · Fictional profiles and illustrative facility slots</span></div></footer>
+    <footer className="border-t border-line"><div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-3 px-5 py-7 text-xs leading-6 text-muted sm:px-10"><span>Kampung Connect · Share skills, build bonds.</span><span>Community neighbours + labelled demo profiles · Illustrative facility slots</span></div></footer>
   </>;
 }
