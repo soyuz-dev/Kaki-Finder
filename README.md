@@ -1,34 +1,106 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Kaki Finder · Kampung Connect
 
-## Getting Started
+A community application connecting generations through shared activities at Pek Kio Community Centre.
 
-First, run the development server:
+## Current status
 
-```bash
+The project structure is ready: Next.js App Router, strict TypeScript, Tailwind CSS 4,
+warm starter pages, domain contracts, API placeholders, and an optional server-only Supabase client.
+Parsing, matching, fixtures, scheduling, interest persistence, and accounts are **not implemented yet**.
+The three placeholder POST endpoints return HTTP 501.
+
+## Run locally
+
+Requires Node.js 22.17+ and npm. From this project folder:
+
+```sh
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the localhost URL printed by Next.js. No API keys are required.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The starter uses TypeScript 6 because the installed Next.js ESLint tooling does not
+yet support TypeScript 7. The compiler targets ES2022 and Tailwind uses its v4 PostCSS plugin.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```sh
+npm run lint
+npm run typecheck
+npm run build
+npm start
+```
 
-## Learn More
+## Structure
 
-To learn more about Next.js, take a look at the following resources:
+```text
+src/
+  app/
+    page.tsx                 Warm landing page starter
+    results/page.tsx         Results shell
+    api/
+      parse/route.ts         Parsing placeholder
+      matches/route.ts       Matching placeholder
+      interests/route.ts     Interest placeholder
+    layout.tsx               Metadata and layout
+    globals.css              Tailwind 4 theme
+  components/
+    layout/                  Shared header
+    ui/                      Reusable visual components
+  features/
+    parser/                  Natural-language interpretation
+    matching/                Compatibility and generation bridge ranking
+    scheduling/              Singapore-time facility suggestions
+    interests/               Express Interest flow
+    auth/                    Optional future accounts
+  data/                      Future resident and facility fixtures
+  lib/
+    api/                     Response helpers
+    repositories/            Storage-independent contracts
+    supabase/                Server-only client factory
+    constants.ts             Labels, timezone, examples
+  types/domain.ts            Resident, request, facility, match types
+supabase/
+  migrations/                Future SQL schema
+  seeds/                     Future repeatable fixtures
+tests/                       Planned behavior coverage
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Decisions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Age and role are independent. Role belongs to each activity: a senior can learn coding while a young adult teaches.
+- Groups: 20–40, 41–64, 65+, and family with kids. Children participate through a parent.
+- English UI/parser; English, Mandarin, Tamil, Malay, and Hokkien matching preferences.
+- Fixture mode will run without keys; Supabase stays optional. Failed database writes must not silently fall back.
+- Facility slots are labelled demo suggestions, never reservations.
+- Interest recording sends no messages. Accounts are a stretch goal after the guest demo works.
 
-## Deploy on Vercel
+## Optional Supabase
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Copy .env.example to .env.local when integrating. Set SUPABASE_URL and SUPABASE_SECRET_KEY
+in the server environment only. The client factory returns null when either is missing;
+it does not connect automatically, create tables, or implement storage.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+DATA_SOURCE=fixtures is reserved for future adapters. Switch to supabase after the schema,
+seed, and adapter exist. Future Auth uses the separate public URL/publishable key and
+cookie-aware user clients with ownership-based RLS. Never expose secret keys to the browser
+or use the privileged client as a signed-in user session.
+
+## Vercel
+
+Import this repository as Next.js, select Node.js 22.x or a compatible newer runtime,
+and use the default next build configuration. Add Supabase environment variables only
+when the integration is ready. No deployment was created during scaffold setup.
+
+## Next steps
+
+1. Populate 15 fictional residents and demo facility schedules.
+2. Implement parsing and editable request confirmation.
+3. Implement matching, bridge badges, and suggested slots.
+4. Connect results and interest recording, then Supabase storage.
+5. Verify the guest demo before adding Supabase Auth accounts.
+
+## Scaffold verification
+
+Verified during setup: lint, TypeScript checking, and the production build pass.
+Local HTTP checks returned 200 for / and /results, and the expected 501 for each
+placeholder POST endpoint. Supabase connectivity and feature behavior are not yet tested.

@@ -1,27 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+@theme {
+  --color-cream: #fff8ed;
+  --color-paper: #fffdf8;
+  --color-kampung-orange: #e8751a;
+  --color-kampung-red: #c41e3a;
+  --color-ink: #35291f;
+  --color-muted: #705c4b;
+  --color-line: #e8d9c6;
+  --font-sans: Arial, Helvetica, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
+/* System fonts keep the demo independent of Google Fonts downloads. */
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  margin: 0;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
 }
+::selection { background: #fbd3ac; }
+:focus-visible { outline: 3px solid var(--color-kampung-red); outline-offset: 5px; }
