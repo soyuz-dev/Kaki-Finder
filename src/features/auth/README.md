@@ -36,7 +36,11 @@ guest records are never claimed based on names, blocks, or local receipts. Match
 carry the account ID and interest writes reject changed identities before saving.
 Local receipts are scoped to the account, and auth transitions discard search drafts.
 
-Profiles remain private and are not added to the fictional matching directory yet.
+Profiles start private. With the discovery migration applied, adults may explicitly
+publish their name, block, participant group, languages, bio, activity intents, and
+availability. Email and auth IDs are never published. A trigger copies consented fields
+to an active directory row with a separate public ID. Hiding deactivates that row; the
+matcher excludes it and new interest inserts are rejected at the database boundary.
 My interests shows the latest 100 selections and supports removing an owned selection.
 Neither interest action sends a message or reserves a venue. Signup/recovery emails are
 sent only when the resident submits the corresponding form.
@@ -50,3 +54,9 @@ sending email, checks sessions/cookies and account APIs, and deletes its users a
 Before the migration, it reports profile/interest checks as deferred; rerun after SQL
 setup for the full live flow. Real confirmation/reset email delivery needs manual testing
 with the project's configured email provider.
+
+Discovery setup: run `supabase/migrations/202609050003_discovery.sql`, then deploy the new
+code before using publication. The latest full `supabase/setup.sql` applies all migrations
+in order. Never apply an older migration by itself after discovery is enabled, since the
+latest migration restricts writes to the generated public ID. `npm run test:auth` also
+checks publication, private defaults, self-match exclusion, hiding, and republishing.

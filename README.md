@@ -84,7 +84,7 @@ tests/                       Parser, matching, schedule, and database checks
 
 1. Copy .env.example to .env.local and populate the server URL/secret and public URL/publishable key. Both URLs must identify the same project. Keep DATA_SOURCE=fixtures during setup.
 2. Run `npm run db:prepare` if fixtures or the migration have changed. This regenerates `supabase/setup.sql` and `supabase/seeds/demo.sql` from the JSON source data.
-3. Open your Supabase project, choose **SQL Editor → New query**, paste all of `supabase/setup.sql`, and run it. The script creates residents, facilities, and interests; applies RLS/grants; and seeds 15 residents and five facilities. Rerunning preserves existing interests.
+3. Open your Supabase project, choose **SQL Editor → New query**, paste all of `supabase/setup.sql`, and run it. The script creates the directory, facilities, profiles, and interests; applies ownership/publication rules; and seeds 15 demo residents and five facilities. Rerunning preserves existing interests.
 4. Run `npm run db:check` for read/seed/access-policy verification. `SCHEMA_MISSING` means step 3 is still needed.
 5. Run `npm run db:verify` to also insert one synthetic interest, retry it to check duplicate protection, and remove only that temporary row.
 6. After verification succeeds, set DATA_SOURCE=supabase and restart the development server. Matching and interest routes use `createCommunityRepository()` to select the adapter.
@@ -135,23 +135,50 @@ that requires confirmation. All venue inventory and times are illustrative.
 
 Email sign-up/sign-in, confirmation, sign-out, password recovery/change, private profiles,
 and My interests are implemented. Parents manage family accounts. Saved profiles prefill
-new requests; profiles are not yet included in the fictional matching directory.
+new requests. Residents can opt in to matching after adding an introduction, activity
+roles, and weekly availability; existing accounts remain private by default.
 
 For an existing database, run `supabase/migrations/202609050002_accounts.sql` in the
 Supabase SQL Editor. New databases can run the full `supabase/setup.sql`. Set APP_URL
 and configure the callback URLs in Supabase Authentication before testing email links.
 See `src/features/auth/README.md` for the exact URL setup, security design and test steps.
 
+## Discoverable neighbours
+
+For an existing account database, run `supabase/migrations/202609050003_discovery.sql`
+and deploy this version before inviting anyone to publish a profile. The complete
+`supabase/setup.sql` includes all migrations in order for new projects.
+
+In My account, add an activity, choose Share/teach, Learn, or Do together for that
+activity, and add weekly Singapore-time availability. To publish, write a short bio,
+select **Make my profile discoverable**, and save. The form explains which fields will
+appear publicly; email and auth IDs are never included in matching cards. Family profiles
+use the adult's details. Opt out by unchecking and saving.
+
+Matches combine active, opted-in neighbours with labelled demo profiles. Generation
+bridge score ranks first, then registered neighbours, shared time, and skill fit. The
+signed-in account ID prevents self-matches even if the request uses a different name.
+Hiding a profile prevents new matches and interest saves; existing interest rows remain
+but their target is labelled unavailable. No messages or facility bookings are sent.
+
+Private profile updates are projected into the server-only directory by a database
+trigger only after consent. Public directory IDs are separate from auth IDs and cannot
+be chosen by clients. The profile owner can update their activities or hide the card;
+other accounts cannot publish, edit, or hide someone else's profile. Account deletion
+hides its directory row while preserving other residents' saved selections.
+
 ## Verification
 
-The automated suite includes 18 tests. Tests cover the
+The automated suite includes 20 tests. Tests cover the
 four requests, independent age/role, explicit preferences, generation ranking, Singapore
 date boundaries, no shared slot, forged slots, repeatable SQL, public access denial,
-foreign keys, duplicate interest protection, and account ownership isolation.
+foreign keys, duplicate interest protection, account ownership isolation, publication,
+hiding, immutable public IDs, retained history, and deletion.
 
 `npm run test:auth` verifies live sign-in/out and cookie sessions using temporary confirmed
 accounts without sending email. After the account SQL is applied it also verifies profile
-storage, interest history, ownership, retries and removal. It deletes its temporary users.
+storage, interest history, ownership, retries, publication, real matching, hiding, and
+removal. It deletes its temporary users and unreferenced synthetic directory rows.
 
 `npm run test:http` targets a local app at http://127.0.0.1:3100 by default. Set
 KAKI_TEST_ORIGIN to another local URL if needed. It verifies page routes and the complete
