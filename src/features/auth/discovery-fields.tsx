@@ -31,7 +31,7 @@ export function DiscoveryFields({ profile, onChange }: { profile: AccountProfile
     <div className="rounded-2xl border border-line bg-cream p-4">
       <label className="flex min-h-11 items-start gap-3 font-semibold"><input type="checkbox" className="mt-1.5 accent-kampung-red" checked={profile.discoverable} onChange={e => onChange({ ...profile, discoverable: e.target.checked })} />Make my profile discoverable</label>
       <p className="mt-2 text-sm leading-6 text-muted">When you save with this selected, residents and guests can see your name, block, age group, languages, introduction, activities, and availability in matching results. Your email stays private.</p>
-      <p className="mt-3 text-sm leading-6 text-muted">Uncheck and save to hide your profile from future matches. Existing saved selections remain, labelled unavailable. For families, use the adult’s details and leave children’s personal details out.</p>
+      <p className="mt-3 text-sm leading-6 text-muted">Uncheck and save to stop new matches and requests. Existing connection requests and their shared details remain visible to both participants. Earlier saved interests are labelled unavailable. For families, use the adult’s details and leave children’s personal details out.</p>
       <p className="mt-3 text-xs font-semibold text-kampung-red">{profile.discoverable ? 'Save profile to apply these public details.' : 'Save profile to keep these details private.'}</p>
     </div>
   </div>;

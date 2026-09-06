@@ -13,7 +13,8 @@
     "db:check": "node --env-file-if-exists=.env.local scripts/run-typescript.mjs db-check",
     "db:verify": "node --env-file-if-exists=.env.local scripts/run-typescript.mjs db-verify",
     "test:http": "node --env-file-if-exists=.env.local scripts/http-smoke.mjs",
-    "test:auth": "node --env-file-if-exists=.env.local scripts/auth-smoke.mjs"
+    "test:auth": "node --env-file-if-exists=.env.local scripts/auth-smoke.mjs",
+    "test:connections": "node --env-file-if-exists=.env.local scripts/connections-smoke.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.6",

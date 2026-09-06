@@ -167,13 +167,32 @@ be chosen by clients. The profile owner can update their activities or hide the 
 other accounts cannot publish, edit, or hide someone else's profile. Account deletion
 hides its directory row while preserving other residents' saved selections.
 
+## Connection requests
+
+Real neighbour cards offer **Send connection request** to signed-in residents.
+Recipients accept or decline under **My account → My connections → Received**;
+senders track status under **Sent**. Pending requests can be withdrawn by the
+sender, and either participant can cancel an accepted connection. The inbox
+refreshes on browser focus and through its Refresh requests button.
+
+Apply `supabase/migrations/202609060004_connections.sql` before deploying this
+version. Existing interests are not converted into requests. Demo cards retain
+the private interest-save flow. Email and block numbers are not shared with the
+recipient. Accepting expresses willingness to connect, not a facility reservation
+or an agreed meetup time. No emails or external notifications are sent.
+
+See `supabase/connections-guide.md` for deployment, the two-account demo, and privacy
+rules. `npm run test:connections` verifies the live flow using three temporary
+confirmed accounts and removes those accounts and requests afterward.
+
 ## Verification
 
-The automated suite includes 20 tests. Tests cover the
+The automated suite includes 21 tests. Tests cover the
 four requests, independent age/role, explicit preferences, generation ranking, Singapore
 date boundaries, no shared slot, forged slots, repeatable SQL, public access denial,
 foreign keys, duplicate interest protection, account ownership isolation, publication,
-hiding, immutable public IDs, retained history, and deletion.
+hiding, immutable public IDs, retained history, deletion, and the connection request
+state machine with participant-only access and idempotent transitions.
 
 `npm run test:auth` verifies live sign-in/out and cookie sessions using temporary confirmed
 accounts without sending email. After the account SQL is applied it also verifies profile

@@ -8,6 +8,7 @@ import { interestSchema } from '@/lib/validation/community';
 import { ACTIVITY_LABELS, LANGUAGE_LABELS, PARTICIPANT_GROUP_LABELS, TIME_ZONE } from '@/lib/constants';
 import type { Language, ParticipantGroup } from '@/types/domain';
 import { DiscoveryFields } from './discovery-fields';
+import { ConnectionInbox } from '@/features/connections/connection-inbox';
 
 const listSchema = z.object({ interests: z.array(interestSchema.extend({ residentName: z.string() })) });
 const empty: AccountProfile = { name: '', block: '', participantGroup: 'young-adult', languages: ['english'], bio: '', discoverable: false, intents: [], availability: [] };
@@ -67,6 +68,7 @@ export function AccountDashboard() {
     <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-widest text-kampung-red">Your kampung connections</p><h1 className="mt-3 text-3xl font-semibold">My account</h1><p className="mt-2 break-all text-sm text-muted">{email}</p></div><div className="flex flex-wrap items-center gap-5 text-sm"><Link href="/account/password" className="min-h-11 content-center text-kampung-red underline underline-offset-4">Change password</Link><button onClick={signOut} disabled={busy} className="min-h-11 font-semibold text-kampung-red">Sign out</button></div></div>
     {error && <p className="mt-5 rounded-xl border border-line bg-paper p-4 text-sm text-kampung-red" role="alert">{error} {!ready && <button className="ml-3 underline" onClick={() => window.location.reload()}>Try again</button>}</p>}
     {message && <p className="mt-5 text-sm leading-6" role="status">{message}</p>}
+    <ConnectionInbox />
     {ready && <div className="mt-7 grid items-start gap-7 lg:grid-cols-2">
       <section className="rounded-3xl border border-line bg-paper p-6"><h2 className="text-xl font-semibold">Your resident profile</h2><p className="mt-2 text-sm leading-6 text-muted">You choose whether neighbours can find you. Your age group doesn’t decide whether you teach or learn.</p>
         <form onSubmit={save} className="mt-5 space-y-4">
